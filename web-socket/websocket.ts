@@ -14,6 +14,7 @@ wss.on('connection', (ws) => {
     console.log('New WebSocket connection');
 
     // Send message history to new clients
+    // TODO: Switch to MongoDB :D
     if (messageHistory.length > 0) {
         ws.send(JSON.stringify({ type: 'history', data: messageHistory }));
     }

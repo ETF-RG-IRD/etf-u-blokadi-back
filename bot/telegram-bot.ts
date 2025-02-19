@@ -4,10 +4,8 @@ import { config } from 'dotenv'
 
 config()
 
-// Initialize Telegraf bot
 const bot = new Telegraf(process.env.TELEGRAM_BOT_API_KEY as string);
 
-// Connect to WebSocket server
 const ws = new WebSocket(`ws://${process.env.WEB_SOCKET_URI}`);
 
 ws.on('open', () => {
@@ -31,7 +29,6 @@ bot.command('announce', (ctx) => {
     }
 });
 
-// Start the bot
 bot.launch();
 
 console.log('Listening for announcements...');
