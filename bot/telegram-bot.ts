@@ -16,6 +16,7 @@ ws.on('error', (error) => {
     console.error('WebSocket error:', error);
 });
 
+
 // Listen for the /announce command
 bot.command('announce', (ctx) => {
     const message = ctx.message.text.replace('/announce', '').trim();

@@ -7,3 +7,5 @@
 # OpenSSL certs and private key
 cert.pem
 key.pem
+
+/dist

@@ -3,14 +3,12 @@ import { WebSocketServer } from 'ws';
 
 // Initialize WebSocket server
 const wss = new WebSocketServer({
-    port: 8080,
-    cert: readFileSync('cert.pem'),
-    key: readFileSync('key.pem'),
+    port: 8080
 });
 
 const messageHistory: string[] = [];
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws: any) => {
     console.log('New WebSocket connection');
 
     // Send message history to new clients
@@ -19,13 +17,13 @@ wss.on('connection', (ws) => {
         ws.send(JSON.stringify({ type: 'history', data: messageHistory }));
     }
 
-    ws.on('message', (message) => {
+    ws.on('message', (message: any) => {
         const messageText = message.toString();
         console.log('Received message from client:', messageText);
 
         messageHistory.push(messageText);
 
-        wss.clients!.forEach((client) => {
+        wss.clients!.forEach((client: any) => {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify({ type: 'message', data: messageText }));
             }
