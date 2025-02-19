@@ -1,0 +1,9 @@
+# Node modules
+/node_modules
+
+# Env variables
+.env
+
+# OpenSSL certs and private key
+cert.pem
+key.pem
