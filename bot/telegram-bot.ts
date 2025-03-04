@@ -30,6 +30,7 @@ bot.command('announce', (ctx) => {
     if (message) {
         // Send the message to the WebSocket server
         ws.send(JSON.stringify({ type: 'announcement', data: message }));
+        console.log('INFO: Sending message to websocket '+ message);
         ctx.reply(`Announcement sent: ${message}`);
     } else {
         ctx.reply('Please provide a message after /announce.');
