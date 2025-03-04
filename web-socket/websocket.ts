@@ -3,13 +3,13 @@ import { WebSocketServer } from 'ws';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-dotenv.config(); // Load environment variables from .env file
+dotenv.config();
 
 // Initialize WebSocket server
 const wss = new WebSocketServer({
     port: 8080
 });
-console.log(process.env.DB_CONNECTION_STRING)
+
 // Connect to MongoDB
 mongoose.connect(`${process.env.DB_CONNECTION_STRING as string}`).then(() => {
     console.log('Connected to DB');
@@ -45,40 +45,40 @@ wss.on('connection', async (ws: any) => {
     } catch (err) {
         console.error('Failed to retrieve message history', err);
     }
+});
 
-    ws.on('message', async (message: any) => {
-        const messageText = message.toString();
-        console.log('Received message from client:', messageText);
+wss.on('message', async (message: any) => {
+    const messageText = message.toString();
+    console.log('Received message from client:', messageText);
 
-        // Parse the incoming message (assuming it's JSON)
-        const parsedMessage = JSON.parse(messageText);
+    // Parse the incoming message (assuming it's JSON)
+    const parsedMessage = JSON.parse(messageText);
 
-        // Save the new message to MongoDB
-        const newMessage = new Message({ text: parsedMessage.data });
-        try {
-            await newMessage.save();
-        } catch (err) {
-            console.error('Failed to save message to MongoDB', err);
+    // Save the new message to MongoDB
+    const newMessage = new Message({ text: parsedMessage.data });
+    try {
+        await newMessage.save();
+    } catch (err) {
+        console.error('Failed to save message to MongoDB', err);
+    }
+
+    // Broadcast the new message to all clients
+    wss.clients!.forEach((client: any) => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({
+                type: 'announcement',
+                data: {
+                    text: parsedMessage.data,
+                    date: new Date() // Use the current timestamp
+                }
+            }));
         }
-
-        // Broadcast the new message to all clients
-        wss.clients!.forEach((client: any) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({
-                    type: 'announcement',
-                    data: {
-                        text: parsedMessage.data,
-                        date: new Date() // Use the current timestamp
-                    }
-                }));
-            }
-        });
     });
+});
 
-    // Handle WebSocket connection close
-    ws.on('close', () => {
-        console.log('WebSocket connection closed');
-    });
+// Handle WebSocket connection close
+wss.on('close', () => {
+    console.log('WebSocket connection closed');
 });
 
 console.log('WebSocket server is running on port 8080');

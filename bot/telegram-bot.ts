@@ -1,8 +1,8 @@
 import { Telegraf } from 'telegraf';
 import { WebSocket } from 'ws';
-import { config } from 'dotenv'
+import dotenv from 'dotenv'
 
-config()
+dotenv.config();
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_API_KEY as string);
 
@@ -19,12 +19,12 @@ ws.on('error', (error) => {
 
 // Listen for the /announce command
 bot.command('announce', (ctx) => {
-    if(ctx.chat.id.toString() != process.env.GROUP_ID?.toString()) {
-        ctx.reply('Invalid group ID, not authorized.')
-        console.log(`Unauthorized use from group with id: ${ctx.chat.id}`)
-        ctx.leaveChat()
-        return;
-    }
+    // if(ctx.chat.id.toString() != process.env.GROUP_ID?.toString()) {
+    //     ctx.reply('Invalid group ID, not authorized.')
+    //     console.log(`Unauthorized use from group with id: ${ctx.chat.id}`)
+    //     ctx.leaveChat()
+    //     return;
+    // }
     const message = ctx.message.text.replace('/announce', '').trim();
 
     if (message) {
