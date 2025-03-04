@@ -1,14 +1,17 @@
 import { readFileSync } from 'fs';
 import { WebSocketServer } from 'ws';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load environment variables from .env file
 
 // Initialize WebSocket server
 const wss = new WebSocketServer({
     port: 8080
 });
-
+console.log(process.env.DB_CONNECTION_STRING)
 // Connect to MongoDB
-mongoose.connect(`${process.env.DB_CONNECTION_STRING}`).then(() => {
+mongoose.connect(`${process.env.DB_CONNECTION_STRING as string}`).then(() => {
     console.log('Connected to DB');
 }).catch((err: any) => {
     console.error('Failed to connect to MongoDB', err);
